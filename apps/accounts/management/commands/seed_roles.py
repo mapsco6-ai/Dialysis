@@ -20,6 +20,9 @@ ROLE_MODEL_PERMISSIONS = {
         "pharmacy.drug": ["view"],
         "pharmacy.prescription": ["view", "add"],
         "nursing.medicationadministrationrecord": ["view"],
+        "lab.labtesttype": ["view"],
+        "lab.laborder": ["view", "add"],
+        "lab.labresult": ["view"],
     },
     Roles.NURSE: {
         "patients.patient": ["view"],
@@ -34,6 +37,9 @@ ROLE_MODEL_PERMISSIONS = {
         "pharmacy.prescription": ["view"],
         "nursing.attendance": ["view", "add", "change"],
         "nursing.medicationadministrationrecord": ["view", "add", "change"],
+        "lab.labtesttype": ["view"],
+        "lab.laborder": ["view"],
+        "lab.labresult": ["view"],
     },
     Roles.PHARMACIST: {
         "patients.patient": ["view"],
@@ -55,6 +61,9 @@ ROLE_MODEL_PERMISSIONS = {
     },
     Roles.LAB_TECH: {
         "patients.patient": ["view"],
+        "lab.labtesttype": ["view", "add", "change"],
+        "lab.laborder": ["view", "change"],
+        "lab.labresult": ["view", "add", "change"],
     },
     Roles.RECEPTIONIST: {
         "accounts.user": ["view"],
