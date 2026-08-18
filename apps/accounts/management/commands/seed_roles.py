@@ -1,0 +1,111 @@
+from django.contrib.auth.models import Group, Permission
+from django.core.management.base import BaseCommand
+
+from apps.core.roles import Roles
+
+# Maps each role to the (app_label, model_name, [codename_actions]) grants it
+# needs, per docs/permissions.md. Populated incrementally as each module's
+# models are built - a role/module cell not listed here yet simply has no
+# grants until that stage lands.
+ROLE_MODEL_PERMISSIONS = {
+    Roles.DOCTOR: {
+        "patients.patient": ["view", "add", "change"],
+        "patients.medicalhistory": ["view", "add", "change"],
+        "patients.vascularaccess": ["view", "add", "change"],
+        "patients.clinicalnote": ["view", "add", "change"],
+        "patients.vitalsign": ["view", "add"],
+        "scheduling.dialysisschedule": ["view"],
+        "scheduling.dialysissession": ["view"],
+        "scheduling.dialysisparameters": ["view"],
+        "pharmacy.drug": ["view"],
+        "pharmacy.prescription": ["view", "add"],
+        "nursing.medicationadministrationrecord": ["view"],
+        "lab.labtesttype": ["view"],
+        "lab.laborder": ["view", "add"],
+        "lab.labresult": ["view"],
+    },
+    Roles.NURSE: {
+        "patients.patient": ["view"],
+        "patients.medicalhistory": ["view"],
+        "patients.vascularaccess": ["view"],
+        "patients.clinicalnote": ["view", "add"],
+        "patients.vitalsign": ["view", "add"],
+        "scheduling.dialysisschedule": ["view"],
+        "scheduling.dialysissession": ["view", "change"],
+        "scheduling.dialysisparameters": ["view", "add", "change"],
+        "pharmacy.drug": ["view"],
+        "pharmacy.prescription": ["view"],
+        "nursing.attendance": ["view", "add", "change"],
+        "nursing.medicationadministrationrecord": ["view", "add", "change"],
+        "lab.labtesttype": ["view"],
+        "lab.laborder": ["view"],
+        "lab.labresult": ["view"],
+    },
+    Roles.PHARMACIST: {
+        "patients.patient": ["view"],
+        "pharmacy.drug": ["view", "add", "change"],
+        "pharmacy.drugstock": ["view", "add", "change"],
+        "pharmacy.prescription": ["view"],
+        "pharmacy.dispenserecord": ["view", "add"],
+        "pharmacy.pharmacystockrequest": ["view", "add"],
+        "warehouse.supplyitem": ["view"],
+        "warehouse.supplystock": ["view"],
+        "nursing.medicationadministrationrecord": ["view"],
+    },
+    Roles.WAREHOUSE_KEEPER: {
+        "warehouse.supplier": ["view", "add", "change"],
+        "warehouse.supplyitem": ["view", "add", "change"],
+        "warehouse.supplystock": ["view", "add", "change"],
+        "warehouse.stockmovement": ["view", "add"],
+        "pharmacy.pharmacystockrequest": ["view", "change"],
+    },
+    Roles.LAB_TECH: {
+        "patients.patient": ["view"],
+        "lab.labtesttype": ["view", "add", "change"],
+        "lab.laborder": ["view", "change"],
+        "lab.labresult": ["view", "add", "change"],
+    },
+    Roles.RECEPTIONIST: {
+        "accounts.user": ["view"],
+        "patients.patient": ["view", "add", "change"],
+        "scheduling.machine": ["view", "add", "change"],
+        "scheduling.shift": ["view", "add", "change"],
+        "scheduling.dialysisschedule": ["view", "add", "change"],
+        "scheduling.dialysissession": ["view", "add", "change"],
+    },
+}
+
+
+class Command(BaseCommand):
+    help = "Create the system's 7 staff role groups and assign their model permissions."
+
+    def handle(self, *args, **options):
+        for role_name in Roles.ALL:
+            group, created = Group.objects.get_or_create(name=role_name)
+            status = "created" if created else "exists"
+            self.stdout.write(f"Group '{role_name}': {status}")
+
+            grants = ROLE_MODEL_PERMISSIONS.get(role_name, {})
+            permissions = []
+            for app_model, actions in grants.items():
+                app_label, model_name = app_model.split(".")
+                for action in actions:
+                    codename = f"{action}_{model_name}"
+                    try:
+                        permissions.append(
+                            Permission.objects.get(
+                                content_type__app_label=app_label,
+                                codename=codename,
+                            )
+                        )
+                    except Permission.DoesNotExist:
+                        self.stderr.write(
+                            f"  Permission {codename} on {app_label} not found - skipping"
+                        )
+            if permissions:
+                group.permissions.set(permissions)
+
+        # Admin group gets full Django admin access via is_superuser on the
+        # user account, not via group permissions - group membership is
+        # still used for module visibility checks in the frontend.
+        self.stdout.write(self.style.SUCCESS("Roles seeded."))

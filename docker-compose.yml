@@ -1,0 +1,23 @@
+# Local development environment: Postgres only. The Django app runs
+# directly on the host (via `python manage.py runserver`) against this DB
+# during Stage 0-7. The full production stack (app + nginx + backups) lives
+# in deploy/docker-compose.yml and is introduced in Stage 8.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-dialysis}
+      POSTGRES_USER: ${POSTGRES_USER:-dialysis}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dialysis}
+    ports:
+      - "5432:5432"
+    volumes:
+      - dialysis_dev_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dialysis}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  dialysis_dev_db:
