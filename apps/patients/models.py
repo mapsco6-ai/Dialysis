@@ -153,6 +153,13 @@ class ClinicalNote(BaseModel):
 
 class VitalSign(BaseModel):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="vital_signs")
+    session = models.ForeignKey(
+        "scheduling.DialysisSession",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="vital_signs",
+    )
     recorded_by = models.ForeignKey("accounts.User", on_delete=models.PROTECT)
 
     weight_pre_kg = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)

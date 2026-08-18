@@ -14,6 +14,9 @@ ROLE_MODEL_PERMISSIONS = {
         "patients.vascularaccess": ["view", "add", "change"],
         "patients.clinicalnote": ["view", "add", "change"],
         "patients.vitalsign": ["view", "add"],
+        "scheduling.dialysisschedule": ["view"],
+        "scheduling.dialysissession": ["view"],
+        "scheduling.dialysisparameters": ["view"],
     },
     Roles.NURSE: {
         "patients.patient": ["view"],
@@ -21,6 +24,9 @@ ROLE_MODEL_PERMISSIONS = {
         "patients.vascularaccess": ["view"],
         "patients.clinicalnote": ["view", "add"],
         "patients.vitalsign": ["view", "add"],
+        "scheduling.dialysisschedule": ["view"],
+        "scheduling.dialysissession": ["view", "change"],
+        "scheduling.dialysisparameters": ["view", "add", "change"],
     },
     Roles.PHARMACIST: {
         "patients.patient": ["view"],
@@ -31,6 +37,10 @@ ROLE_MODEL_PERMISSIONS = {
     Roles.RECEPTIONIST: {
         "accounts.user": ["view"],
         "patients.patient": ["view", "add", "change"],
+        "scheduling.machine": ["view", "add", "change"],
+        "scheduling.shift": ["view", "add", "change"],
+        "scheduling.dialysisschedule": ["view", "add", "change"],
+        "scheduling.dialysissession": ["view", "add", "change"],
     },
 }
 
