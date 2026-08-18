@@ -42,3 +42,6 @@ htmlcov/
 # Docker volumes (local dev bind mounts, if any)
 postgres_data/
 backups/
+
+# TLS material generated per-deployment - never commit private keys
+deploy/nginx/certs/
