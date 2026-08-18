@@ -37,9 +37,7 @@ class SupplyItem(BaseModel):
 
     @property
     def quantity_on_hand(self):
-        return self.stock_batches.aggregate(total=models.Sum("quantity_on_hand"))[
-            "total"
-        ] or 0
+        return self.stock_batches.aggregate(total=models.Sum("quantity_on_hand"))["total"] or 0
 
 
 class SupplyStock(BaseModel):
@@ -64,9 +62,7 @@ class StockMovement(BaseModel):
         OUT = "out", "Out"
         ADJUSTMENT = "adjustment", "Adjustment"
 
-    supply_item = models.ForeignKey(
-        SupplyItem, on_delete=models.CASCADE, related_name="movements"
-    )
+    supply_item = models.ForeignKey(SupplyItem, on_delete=models.CASCADE, related_name="movements")
     movement_type = models.CharField(max_length=20, choices=MovementType.choices)
     quantity = models.PositiveIntegerField()
     supplier = models.ForeignKey(

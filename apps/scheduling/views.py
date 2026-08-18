@@ -46,11 +46,13 @@ class DialysisScheduleViewSet(viewsets.ModelViewSet):
             )
 
         today = timezone.localdate()
-        busy_machine_ids = DialysisSession.objects.filter(
-            scheduled_date=today,
-            shift=shift,
-        ).exclude(status=DialysisSession.Status.CANCELLED).values_list(
-            "machine_id", flat=True
+        busy_machine_ids = (
+            DialysisSession.objects.filter(
+                scheduled_date=today,
+                shift=shift,
+            )
+            .exclude(status=DialysisSession.Status.CANCELLED)
+            .values_list("machine_id", flat=True)
         )
         machine = (
             Machine.objects.filter(status=Machine.Status.AVAILABLE)
@@ -73,9 +75,7 @@ class DialysisScheduleViewSet(viewsets.ModelViewSet):
             check_in_time=timezone.now(),
             status=DialysisSession.Status.CHECKED_IN,
         )
-        return Response(
-            DialysisSessionSerializer(session).data, status=status.HTTP_201_CREATED
-        )
+        return Response(DialysisSessionSerializer(session).data, status=status.HTTP_201_CREATED)
 
 
 class DialysisSessionViewSet(viewsets.ModelViewSet):

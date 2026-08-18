@@ -30,9 +30,7 @@ class Drug(BaseModel):
 
     @property
     def quantity_on_hand(self):
-        return self.stock_batches.aggregate(total=models.Sum("quantity_on_hand"))[
-            "total"
-        ] or 0
+        return self.stock_batches.aggregate(total=models.Sum("quantity_on_hand"))["total"] or 0
 
 
 class DrugStock(BaseModel):

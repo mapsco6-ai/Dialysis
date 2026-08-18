@@ -58,7 +58,7 @@ class Patient(BaseModel):
         return f"{self.mrn} - {self.full_name}"
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         parts = [self.first_name, self.father_name, self.grandfather_name, self.family_name]
         return " ".join(p for p in parts if p)
 
@@ -119,9 +119,7 @@ class VascularAccess(BaseModel):
         FAILED = "failed", "Failed"
         REMOVED = "removed", "Removed"
 
-    patient = models.ForeignKey(
-        Patient, on_delete=models.CASCADE, related_name="vascular_accesses"
-    )
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="vascular_accesses")
     access_type = models.CharField(max_length=20, choices=AccessType.choices)
     site = models.CharField(max_length=100, blank=True)
     creation_date = models.DateField(null=True, blank=True)
@@ -139,9 +137,7 @@ class ClinicalNote(BaseModel):
 
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="clinical_notes")
     author = models.ForeignKey("accounts.User", on_delete=models.PROTECT)
-    note_type = models.CharField(
-        max_length=20, choices=NoteType.choices, default=NoteType.GENERAL
-    )
+    note_type = models.CharField(max_length=20, choices=NoteType.choices, default=NoteType.GENERAL)
     content = models.TextField()
 
     class Meta:

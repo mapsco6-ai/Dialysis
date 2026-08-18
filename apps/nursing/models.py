@@ -12,9 +12,7 @@ class Attendance(BaseModel):
     user = models.ForeignKey(
         "accounts.User", on_delete=models.CASCADE, related_name="attendance_records"
     )
-    shift = models.ForeignKey(
-        "scheduling.Shift", on_delete=models.SET_NULL, null=True, blank=True
-    )
+    shift = models.ForeignKey("scheduling.Shift", on_delete=models.SET_NULL, null=True, blank=True)
     date = models.DateField()
     check_in_time = models.DateTimeField(null=True, blank=True)
     check_out_time = models.DateTimeField(null=True, blank=True)

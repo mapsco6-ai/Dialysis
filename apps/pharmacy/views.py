@@ -63,9 +63,7 @@ class DispenseRecordViewSet(viewsets.ModelViewSet):
 
 
 class PharmacyStockRequestViewSet(viewsets.ModelViewSet):
-    queryset = PharmacyStockRequest.objects.select_related(
-        "drug", "requested_by", "approved_by"
-    )
+    queryset = PharmacyStockRequest.objects.select_related("drug", "requested_by", "approved_by")
     serializer_class = PharmacyStockRequestSerializer
     permission_classes = [PharmacyStockRequestPermission]
 
@@ -110,9 +108,11 @@ class PharmacyStockRequestViewSet(viewsets.ModelViewSet):
 
         with transaction.atomic():
             remaining = quantity_needed
-            batches = SupplyStock.objects.select_for_update().filter(
-                supply_item=warehouse_item, quantity_on_hand__gt=0
-            ).order_by("expiry_date")
+            batches = (
+                SupplyStock.objects.select_for_update()
+                .filter(supply_item=warehouse_item, quantity_on_hand__gt=0)
+                .order_by("expiry_date")
+            )
             for batch in batches:
                 if remaining <= 0:
                     break

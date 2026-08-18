@@ -31,5 +31,5 @@ class MeSerializer(serializers.ModelSerializer):
             "roles",
         )
 
-    def get_roles(self, obj):
+    def get_roles(self, obj) -> list[str]:
         return list(obj.groups.values_list("name", flat=True))
