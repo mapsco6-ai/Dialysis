@@ -19,6 +19,7 @@ ROLE_MODEL_PERMISSIONS = {
         "scheduling.dialysisparameters": ["view"],
         "pharmacy.drug": ["view"],
         "pharmacy.prescription": ["view", "add"],
+        "nursing.medicationadministrationrecord": ["view"],
     },
     Roles.NURSE: {
         "patients.patient": ["view"],
@@ -31,6 +32,8 @@ ROLE_MODEL_PERMISSIONS = {
         "scheduling.dialysisparameters": ["view", "add", "change"],
         "pharmacy.drug": ["view"],
         "pharmacy.prescription": ["view"],
+        "nursing.attendance": ["view", "add", "change"],
+        "nursing.medicationadministrationrecord": ["view", "add", "change"],
     },
     Roles.PHARMACIST: {
         "patients.patient": ["view"],
@@ -41,6 +44,7 @@ ROLE_MODEL_PERMISSIONS = {
         "pharmacy.pharmacystockrequest": ["view", "add"],
         "warehouse.supplyitem": ["view"],
         "warehouse.supplystock": ["view"],
+        "nursing.medicationadministrationrecord": ["view"],
     },
     Roles.WAREHOUSE_KEEPER: {
         "warehouse.supplier": ["view", "add", "change"],

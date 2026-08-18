@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "apps.scheduling",
     "apps.warehouse",
     "apps.pharmacy",
+    "apps.nursing",
 ]
 
 MIDDLEWARE = [
