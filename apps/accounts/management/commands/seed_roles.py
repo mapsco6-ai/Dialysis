@@ -8,8 +8,29 @@ from apps.core.roles import Roles
 # models are built - a role/module cell not listed here yet simply has no
 # grants until that stage lands.
 ROLE_MODEL_PERMISSIONS = {
+    Roles.DOCTOR: {
+        "patients.patient": ["view", "add", "change"],
+        "patients.medicalhistory": ["view", "add", "change"],
+        "patients.vascularaccess": ["view", "add", "change"],
+        "patients.clinicalnote": ["view", "add", "change"],
+        "patients.vitalsign": ["view", "add"],
+    },
+    Roles.NURSE: {
+        "patients.patient": ["view"],
+        "patients.medicalhistory": ["view"],
+        "patients.vascularaccess": ["view"],
+        "patients.clinicalnote": ["view", "add"],
+        "patients.vitalsign": ["view", "add"],
+    },
+    Roles.PHARMACIST: {
+        "patients.patient": ["view"],
+    },
+    Roles.LAB_TECH: {
+        "patients.patient": ["view"],
+    },
     Roles.RECEPTIONIST: {
         "accounts.user": ["view"],
+        "patients.patient": ["view", "add", "change"],
     },
 }
 
